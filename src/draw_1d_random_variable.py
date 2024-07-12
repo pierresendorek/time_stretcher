@@ -27,7 +27,7 @@ samples = torch.tensor(samples, dtype=torch.float32).to(device)
 
 
 def draw_uniform_on_disc():
-    theta = 2 * np.random.rand(1,1) - 1
+    theta = 2 * (np.random.rand(1,1) - 0.5)
     return torch.tensor(theta, dtype=torch.float32).to(device)
 
 
@@ -42,7 +42,7 @@ class NN(torch.nn.Module):
         self.fc3 = nn.Linear(100, 100)
         self.fc4 = nn.Linear(100, 100)
         self.fc5 = nn.Linear(100, 1)
-        self.activation = nn.LeakyReLU(0.1)
+        self.activation = nn.LeakyReLU(0.5)
 
     def forward(self, x):
         x = self.activation(self.fc1(x))
@@ -67,7 +67,8 @@ for iteration in range(10000):
     loss = torch.mean(v * (model(v) - samples) + torch.abs(model(v) - samples)) 
     loss.backward()
     optimizer.step()
-    print(loss)
+    if iteration % 100 == 0:
+        print(iteration, loss)
 
 
 new_samples = []
